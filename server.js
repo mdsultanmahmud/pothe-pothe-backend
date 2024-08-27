@@ -17,6 +17,7 @@ connectDB();
 
 //api endpoints
 app.use("/api/v1/food", foodRouter);
+app.use("/images", express.static("uploads"));
 
 app.get("/", (req, res) => {
   res.send("Food Delivery Server is Working!!!");
