@@ -2,6 +2,8 @@ import validator from "validator";
 import userModel from "../models/user.model.js";
 import bcrypt from "bcrypt";
 import { createToken } from "../authenticaiton/authentication.user.js";
+
+// login a user
 const loginUser = async (req, res) => {
   const { email, password } = req.body;
   try {
@@ -9,13 +11,13 @@ const loginUser = async (req, res) => {
     // if user does'nt exist
     if (!user) {
       return res
-        .status(400)
+        .status(200)
         .json({ success: false, message: "User does'nt exist!" });
     }
     const isMatchPassword = await bcrypt.compare(password, user?.password);
     if (!isMatchPassword) {
       return res
-        .status(400)
+        .status(200)
         .json({ success: false, message: "Invalid Credentials!" });
     }
     const token = createToken(user?._id, user?.email);
@@ -26,17 +28,18 @@ const loginUser = async (req, res) => {
     });
   } catch (error) {
     console.log(error);
-    res.status(400).json({ success: false, message: "Something went wrong!" });
+    res.status(200).json({ success: false, message: "Something went wrong!" });
   }
 };
 
+// register user
 const registerUser = async (req, res) => {
   try {
     const { name, email, password } = req.body;
     // checking user exist of not with this email
     const existendUser = await userModel.findOne({ email: email });
     if (existendUser) {
-      return res.status(400).json({
+      return res.status(200).json({
         success: false,
         message: "User already exist with this email.",
       });
@@ -44,14 +47,14 @@ const registerUser = async (req, res) => {
 
     // validate gmail
     if (!validator.isEmail(email)) {
-      return res.status(400).json({
+      return res.status(200).json({
         success: false,
         message: "Please enter a valid email.",
       });
     }
     // validate password
     if (password.length < 8) {
-      return res.status(400).json({
+      return res.status(200).json({
         success: false,
         message: "Password must be at least 8 character",
       });
@@ -76,12 +79,12 @@ const registerUser = async (req, res) => {
       });
     } else {
       res
-        .status(400)
+        .status(200)
         .json({ success: false, message: "Something went wrong!" });
     }
   } catch (error) {
     console.log(error);
-    res.status(400).json({ success: false, message: "Something went wrong!" });
+    res.status(200).json({ success: false, message: "Something went wrong!" });
   }
 };
 
